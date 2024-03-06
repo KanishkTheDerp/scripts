@@ -50,23 +50,23 @@ clean() {
 branch='ksu/master'
 folder='msm-4.9'
 repo_link='https://github.com/KanishkTheDerp/msm-4.9'
-green_message "File will be saved in $folder"
+green_message "File will be saved in $HOME/$folder"
 
 sleep 1s
 
 # Check if the folder already exists
-if [ -d "$folder" ]; then
+if [ -d "$HOME/$folder" ]; then
         echo
-        yellow_message "This $folder is already saved, nothing to clone!"
-        cd $folder
+        yellow_message "This $HOME/$folder is already saved, nothing to clone!"
+        cd $HOME/$folder
         clean
         echo
 else
         yellow_message "Downloading your files from $repo_link from branch $branch....."
         echo
-        git clone $repo_link -b "$branch" $folder
-        cd $folder
-        yellow_message "Your files have been successfully saved in $folder"
+        git clone $repo_link -b "$branch" $HOME/$folder
+        cd $HOME/$folder
+        yellow_message "Your files have been successfully saved in $HOME/$folder"
         echo
         sleep 1s
 fi
@@ -106,8 +106,8 @@ echo
 # 2.GCC
 # Define according tou your Kernel Source
 TOOLCHAIN="clang"
-CLANG_NAME="playground"
-TOOLCHAIN_SOURCE="https://gitlab.com/PixelOS-Devices/playgroundtc.git"
+CLANG_NAME="VoltageOS"
+TOOLCHAIN_SOURCE="https://gitlab.com/voltageos/clang"
 
 GCC_Source_32="https://github.com/mvaisakh/gcc-arm"
 GCC_Source_64="https://github.com/mvaisakh/gcc-arm64"
@@ -126,16 +126,16 @@ if [ "$TOOLCHAIN" == "gcc" ]; then
     export STRIP="$HOME/gcc64/aarch64-elf/bin/strip"
     export KBUILD_COMPILER_STRING=$("$HOME/gcc64/bin/aarch64-elf-gcc" --version | head -n 1)
 elif [ "$TOOLCHAIN" == "clang" ]; then
-    if [ ! -d "$HOME/cycle/playground" ]; then
+    if [ ! -d "$HOME/VoltageOS" ]; then
       yellow_message "Your Chosen Toolchain is $TOOLCHAIN"
       echo
       sleep 1s
-      green_message "<< Cloning Playground Clang >>"
-      git clone -b 17 --depth=1 "$TOOLCHAIN_SOURCE" "$HOME/cycle/playground"
+      green_message "<< Cloning VoltageOS Clang >>"
+      git clone -b test "$TOOLCHAIN_SOURCE" "$HOME/VoltageOS"
     fi
-    export PATH="$HOME/cycle/playground/bin:$PATH"
-    export STRIP="$HOME/cycle/playground/aarch64-linux-gnu/bin/strip"
-    export KBUILD_COMPILER_STRING=$("$HOME/cycle/playground/bin/clang" --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:>]//g')
+    export PATH="$HOME/VoltageOS/bin:$PATH"
+    export STRIP="$HOME/VoltageOS/aarch64-linux-gnu/bin/strip"
+    export KBUILD_COMPILER_STRING=$("$HOME/VoltageOS/bin/clang" --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:>]//g')
 fi
 
 # Function to build the kernel
@@ -222,10 +222,9 @@ KERVER=$(make kernelversion)
         echo
 
 # Now Clone AnyKernel
-        clear
         sleep 2s
         yellow_message "<< Cloning AnyKernel from your repo >>"
-        git clone "$AnyKernel" --single-branch -b "$AnyKernelbranch" /home/Kanishk/AnyKernel3
+        git clone "$AnyKernel" --single-branch -b "$AnyKernelbranch" $HOME/AnyKernel3
         echo
         green_message "<< AnyKernel Cloned Successfully!! >>"
 
@@ -234,7 +233,7 @@ yellow_message "<< Creating Kernel Zip >>"
 kernel_name="Streamline"
 device_name="bluecross"
 zip_name="$kernel_name-14-$device_name-$(date +"%Y%m%d-%H%M").zip"
-export anykernel="/home/Kanishk/AnyKernel3"
+export anykernel="$HOME/AnyKernel3"
 
 delete_zip(){
   cd $anykernel
@@ -243,20 +242,20 @@ delete_zip(){
 }
 
 build_package(){
-  cp -rf /home/Kanishk/main/msm-4.9/out/arch/arm64/boot/Image.lz4-dtb $anykernel/
-  cp -rf /home/Kanishk/main/msm-4.9/out/arch/arm64/boot/dtbo.img $anykernel/
+  cp -rf $HOME/$folder/out/arch/arm64/boot/Image.lz4-dtb $anykernel/
+  cp -rf $HOME/$folder/out/arch/arm64/boot/dtbo.img $anykernel/
   zip -r9 UPDATE-AnyKernel3.zip * -x README UPDATE-AnyKernel3.zip
 }
 
 make_name(){
   mv UPDATE-AnyKernel3.zip $zip_name
-  mv $zip_name /home/Kanishk/kernel_zips/
+  mv $zip_name $HOME/kernel_zips/
   green_message "<< Created Kernel zip >>"
 }
 
 upload(){
    yellow_message "<< Uploading to PixelDrain >>"
-   pdup /home/Kanishk/kernel_zips/$zip_name
+   pdup $HOME/kernel_zips/$zip_name
    green_message "<< Finished uploading >>"
 }
 
