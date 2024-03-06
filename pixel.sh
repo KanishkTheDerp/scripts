@@ -64,7 +64,7 @@ if [ -d "$HOME/$folder" ]; then
 else
         yellow_message "Downloading your files from $repo_link from branch $branch....."
         echo
-        git clone $repo_link -b "$branch" $HOME/$folder
+        git clone --recurse-submodules $repo_link -b "$branch" $HOME/$folder
         cd $HOME/$folder
         yellow_message "Your files have been successfully saved in $HOME/$folder"
         echo
