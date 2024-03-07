@@ -202,7 +202,9 @@ mkdir -p out/arch/arm64/
 cp -r arch/arm64/boot out/arch/arm64/
 rm -rf out/arch/arm64/boot/dts/google
 mkdir -p out/arch/arm64/boot/dts/google/
+mkdir -p out/arch/arm64/boot/dts/qcom
 cp arch/arm64/boot/dts/google/*.dts* out/arch/arm64/boot/dts/google/
+cp arch/arm64/boot/dts/qcom/*.dts* out/arch/arm64/boot/dts/qcom/
 green_message "<< DTS copied successfully!! >>"
 echo
 sleep 1s
