@@ -42,7 +42,7 @@ clean() {
   sleep 1s
   echo
   rm -rf out/
-  rm -rf anykernel/
+  rm -rf $HOME/AnyKernel3
   green_message "<< Residuals Cleaned!! >>"
 }
 
@@ -251,6 +251,7 @@ build_package(){
 
 make_name(){
   mv UPDATE-AnyKernel3.zip $zip_name
+  mkdir $HOME/kernel_zips
   mv $zip_name $HOME/kernel_zips/
   green_message "<< Created Kernel zip >>"
 }
