@@ -106,8 +106,8 @@ echo
 # 2.GCC
 # Define according tou your Kernel Source
 TOOLCHAIN="clang"
-CLANG_NAME="VoltageOS"
-TOOLCHAIN_SOURCE="https://gitlab.com/voltageos/clang"
+CLANG_NAME="Clang_19"
+TOOLCHAIN_SOURCE="https://bitbucket.org/shuttercat/clang"
 
 GCC_Source_32="https://github.com/mvaisakh/gcc-arm"
 GCC_Source_64="https://github.com/mvaisakh/gcc-arm64"
@@ -126,16 +126,16 @@ if [ "$TOOLCHAIN" == "gcc" ]; then
     export STRIP="$HOME/gcc64/aarch64-elf/bin/strip"
     export KBUILD_COMPILER_STRING=$("$HOME/gcc64/bin/aarch64-elf-gcc" --version | head -n 1)
 elif [ "$TOOLCHAIN" == "clang" ]; then
-    if [ ! -d "$HOME/VoltageOS" ]; then
+    if [ ! -d "$HOME/Clang_19" ]; then
       yellow_message "Your Chosen Toolchain is $TOOLCHAIN"
       echo
       sleep 1s
-      green_message "<< Cloning VoltageOS Clang >>"
-      git clone -b test "$TOOLCHAIN_SOURCE" "$HOME/VoltageOS"
+      green_message "<< Cloning Clang 19 >>"
+      git clone -b 14 "$TOOLCHAIN_SOURCE" "$HOME/Clang_19"
     fi
-    export PATH="$HOME/VoltageOS/bin:$PATH"
-    export STRIP="$HOME/VoltageOS/aarch64-linux-gnu/bin/strip"
-    export KBUILD_COMPILER_STRING=$("$HOME/VoltageOS/bin/clang" --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:>]//g')
+    export PATH="$HOME/Clang_19/bin:$PATH"
+    export STRIP="$HOME/Clang_19/aarch64-linux-gnu/bin/strip"
+    export KBUILD_COMPILER_STRING=$("$HOME/Clang_19/bin/clang" --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:>]//g')
 fi
 
 # Function to build the kernel
