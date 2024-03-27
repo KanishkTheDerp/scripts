@@ -221,8 +221,8 @@ delete_zip(){
 }
 
 build_package(){
-  cp -rf $HOME/$folder/out/arch/arm64/boot/Image.lz4-dtb $anykernel/
-  cp -rf $HOME/$folder/out/arch/arm64/boot/dtbo.img $anykernel/
+  cp -rf /home/kanishkthederp/msm-4.9/out/arch/arm64/boot/Image.lz4-dtb $anykernel/
+  cp -rf /home/kanishkthederp/msm-4.9/out/arch/arm64/boot/dtbo.img $anykernel/
   zip -r9 UPDATE-AnyKernel3.zip * -x README UPDATE-AnyKernel3.zip
 }
 
