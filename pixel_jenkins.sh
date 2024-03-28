@@ -3,105 +3,75 @@
 # clear out screen
 clear
 
-banner(){
-echo "#####################################"
-echo "#                                   #"
-echo "# Made By: CYKEEK & Kanishk         #"
-echo "# Build Script                      #"
-echo "# For msm-4.9 kernels               #"
-echo "#                                   #"
-echo "#####################################"
-echo
-}
-
-# Define colors
-yellow='\033[0;33m'
-white='\033[0m'
-red='\033[0;31m'
-green='\e[0;32m'
-
-# Function to display a message in green
-green_message() {
-  echo -e "$green$1$white"
-}
-
-# Function to display a message in yellow
-yellow_message() {
-  echo -e "$yellow$1$white"
-}
-
-# Function to display a message in red
-red_message() {
-  echo -e "$red$1$white"
-}
+# banner(){
+# echo "#####################################"
+# echo "#                                   #"
+# echo "# Made By: CYKEEK & Kanishk         #"
+# echo "# Build Script                      #"
+# echo "# For msm-4.9 kernels               #"
+# echo "#                                   #"
+# echo "#####################################"
+# echo
+# }
 
 export base='/home/kanishkthederp'
+echo "Base directory has been set to $base."
 
 clean() {
-  echo
   # Clean out residuals
-  red_message "<< Clean out residuals!! >>"
+  echo "Cleaning residuals."
   sleep 1s
-  echo
-  rm -rf $base/$folder/out/
+  rm -rf $base/$folder/out
   rm -rf $base/AnyKernel3
-  green_message "<< Residuals Cleaned!! >>"
+  rm -rf $base/kernel_zips
+  echo "Finished cleaning up."
 }
 
 # Input branch name and folder name
 branch='ksu/master'
 folder='msm-4.9'
 repo_link='https://github.com/KanishkTheDerp/msm-4.9'
-green_message "File will be saved in $base/$folder"
+echo "File will be saved in $base/$folder"
 
 sleep 1s
 
 # Check if the folder already exists
 if [ -d "$base/$folder" ]; then
-        echo
-        yellow_message "This $base/$folder is already saved, nothing to clone!"
+        echo "$base/$folder is already present, nothing to clone."
         cd $base/$folder
         clean
-        echo
 else
-        yellow_message "Downloading your files from $repo_link from branch $branch....."
-        echo
+        echo "Downloading your files from $repo_link on branch $branch."
         git clone --recurse-submodules $repo_link -b "$branch" $base/$folder
         cd $base/$folder
-        yellow_message "Your files have been successfully saved in $base/$folder"
-        echo
+        echo "Your files have been successfully saved in $base/$folder."
         sleep 1s
 fi
 
 # Configure build information
-DEVICE="Google Pixel 3"
-CODENAME="blueline"
-KERNEL_NAME="Streamline-KernelSU"
+DEVICE="Google Pixel 3/3XL"
+CODENAME="bluecross"
+KERNEL_NAME="Streamline"
 KERNEL_VER="4.9"
-echo
-yellow_message "Device Name is $DEVICE and Kernel Name is $KERNEL_NAME"
+echo "Your device name is $DEVICE ($CODENAME), kernel name is $KERNEL_NAME."
 sleep 1s
-echo
 
 # Define Your DEFCONFIG
 DEFCONFIG="b1c1_defconfig"
-yellow_message "Your DEFCONFIG is $DEFCONFIG"
+echo "Selected default configuration file is $DEFCONFIG."
 sleep 1s
-echo
 
 # Define Your AnyKernel Links
 AnyKernel="https://github.com/Cykeek-Labs/AnyKernel3"
 AnyKernelbranch="blueline"
-yellow_message "Anykernel Link set to $AnyKernel -b $AnyKernelbranch"
+echo "AnyKernel3 is set to $AnyKernel on branch $AnyKernelbranch."
 sleep 1s
-echo
 
 # Define KBUILD Information
 HOST="DerpGang"
 USER="Kanishk"
-yellow_message "Host Build Set to \nHOST=$HOST and USER=$USER"
+echo "KBuild host is set to $HOST and user to $USER."
 sleep 1s
-echo
 
 # Define Toolchain
 # 1.clang
@@ -117,8 +87,7 @@ GCC_Source_64="https://github.com/mvaisakh/gcc-arm64"
 # Automation for toolchain and gcc builds
 if [ "$TOOLCHAIN" == "gcc" ]; then
     if [ ! -d "$base/gcc64" ] && [ ! -d "$base/gcc32" ]; then
-      yellow_message "Your Choose $TOOLCHAIN"
-      echo
+      echo "Defualt toolchain is set to $TOOLCHAIN."
       sleep 1s
       green_message "<< Cloning GCC from arter >>"
       git clone --depth=1 "$GCC_Source_64" "$base/gcc64"
@@ -129,24 +98,20 @@ if [ "$TOOLCHAIN" == "gcc" ]; then
     export KBUILD_COMPILER_STRING=$("$base/gcc64/bin/aarch64-elf-gcc" --version | head -n 1)
 elif [ "$TOOLCHAIN" == "clang" ]; then
     if [ ! -d "$base/Clang" ]; then
-      yellow_message "Your Chosen Toolchain is $TOOLCHAIN"
-      echo
+      echo "Default toolchain is set to $TOOLCHAIN."
       sleep 1s
-      green_message "<< Cloning Clang 19 >>"
+      echo "Cloning Clang 19 from BitBucket.org."
       git clone -b 14 "$TOOLCHAIN_SOURCE" "$base/Clang"
     fi
     export PATH="$base/Clang/bin:$PATH"
     export STRIP="$base/Clang/aarch64-linux-gnu/bin/strip"
-    export KBUILD_COMPILER_STRING=$("$base/Clang/bin/clang" --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:>]//g')
 fi
 
 # Function to build the kernel
 build_kernel() {
-        green_message "Executing kernel Build..."
+        echo "Executing kernel build."
         sleep 1s
-        echo
-        echo "Your Kernel Version is $KERNEL_VER"
-        echo
+        echo "Kernel Version is $KERNEL_VER."
         sleep 1s
         Start=$(date +"%s")
 
@@ -193,12 +158,10 @@ export KBUILD_BUILD_HOST="$HOST"
 export KBUILD_BUILD_USER="$USER"
 
 # Pre-configured Actions
-green_message "Creating workspace for Kernel. Please Wait!"
-echo
+echo "Creating workspace for kernel. Please Wait."
 sleep 1s
 mkdir -p out/
-yellow_message "<< Copying DTS Files!! >>"
-echo
+echo "Copying DTS files."
 sleep 1s
 mkdir -p out/arch/arm64/
 cp -r arch/arm64/boot out/arch/arm64/
@@ -207,33 +170,29 @@ mkdir -p out/arch/arm64/boot/dts/google/
 mkdir -p out/arch/arm64/boot/dts/qcom
 cp arch/arm64/boot/dts/google/*.dts* out/arch/arm64/boot/dts/google/
 cp arch/arm64/boot/dts/qcom/*.dts* out/arch/arm64/boot/dts/qcom/
-green_message "<< DTS copied successfully!! >>"
-echo
+echo "DTS copied successfully."
 sleep 1s
 
 make O=out clean && make O=out mrproper
 make "$DEFCONFIG" O=out
 
 # Execute kernel Building Action
-yellow_message "<< Compiling the kernel >>"
-echo
+echo "Compiling $KERNEL_NAME ($folder)."
 sleep 1s
 build_kernel || error=true
 DATE=$(date +"%Y%m%d-%H%M%S")
 KERVER=$(make kernelversion)
-        green_message "<< Build completed in $(($Diff / 60)) minutes and $(($Diff % 60)) seconds >>"
+        echo "Build completed in $(($Diff / 60)) minutes and $(($Diff % 60)) seconds."
         sleep 2s
-        echo
 
 # Now Clone AnyKernel
         sleep 2s
-        yellow_message "<< Cloning AnyKernel from your repo >>"
+        echo "Cloning AnyKernel3."
         git clone "$AnyKernel" --single-branch -b "$AnyKernelbranch" $base/AnyKernel3
-        echo
-        green_message "<< AnyKernel Cloned Successfully!! >>"
+        echo "AnyKernel3 has been cloned successfully."
 
 # Create Zip
-yellow_message "<< Creating Kernel Zip >>"
+echo "Creating $KERNEL_NAME ($folder) zip."
 kernel_name="Streamline"
 device_name="bluecross"
 zip_name="$kernel_name-14-$device_name-$(date +"%Y%m%d-%H%M").zip"
@@ -255,13 +214,13 @@ make_name(){
   mv UPDATE-AnyKernel3.zip $zip_name
   mkdir $base/kernel_zips
   mv $zip_name $base/kernel_zips/
-  green_message "<< Created Kernel zip >>"
+  echo "Created $KERNEL_NAME ($folder) zip."
 }
 
 upload(){
-   yellow_message "<< Uploading to PixelDrain >>"
+   echo "Uploading to PixelDrain file hosting. (pixeldrain.com)"
    pdup $base/kernel_zips/$zip_name
-   green_message "<< Finished uploading >>"
+   echo "Finished uploading."
 }
 
 delete_zip
