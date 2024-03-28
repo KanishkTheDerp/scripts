@@ -35,7 +35,7 @@ red_message() {
   echo -e "$red$1$white"
 }
 
-cd /home/kanishkthederp/msm-4.9/
+export base='/home/kanishkthederp'
 
 clean() {
   echo
@@ -43,10 +43,35 @@ clean() {
   red_message "<< Clean out residuals!! >>"
   sleep 1s
   echo
-  rm -rf out/
-  rm -rf $HOME/AnyKernel3
+  rm -rf $base/$folder/out/
+  rm -rf $base/AnyKernel3
   green_message "<< Residuals Cleaned!! >>"
 }
+
+# Input branch name and folder name
+branch='ksu/master'
+folder='msm-4.9'
+repo_link='https://github.com/KanishkTheDerp/msm-4.9'
+green_message "File will be saved in $base/$folder"
+
+sleep 1s
+
+# Check if the folder already exists
+if [ -d "$base/$folder" ]; then
+        echo
+        yellow_message "This $base/$folder is already saved, nothing to clone!"
+        cd $base/$folder
+        clean
+        echo
+else
+        yellow_message "Downloading your files from $repo_link from branch $branch....."
+        echo
+        git clone --recurse-submodules $repo_link -b "$branch" $base/$folder
+        cd $base/$folder
+        yellow_message "Your files have been successfully saved in $base/$folder"
+        echo
+        sleep 1s
+fi
 
 # Configure build information
 DEVICE="Google Pixel 3"
@@ -83,7 +108,7 @@ echo
 # 2.GCC
 # Define according tou your Kernel Source
 TOOLCHAIN="clang"
-CLANG_NAME="Clang_19"
+CLANG_NAME="Clang"
 TOOLCHAIN_SOURCE="https://bitbucket.org/shuttercat/clang"
 
 GCC_Source_32="https://github.com/mvaisakh/gcc-arm"
@@ -91,28 +116,28 @@ GCC_Source_64="https://github.com/mvaisakh/gcc-arm64"
 
 # Automation for toolchain and gcc builds
 if [ "$TOOLCHAIN" == "gcc" ]; then
-    if [ ! -d "$HOME/gcc64" ] && [ ! -d "$HOME/gcc32" ]; then
+    if [ ! -d "$base/gcc64" ] && [ ! -d "$base/gcc32" ]; then
       yellow_message "Your Choose $TOOLCHAIN"
       echo
       sleep 1s
       green_message "<< Cloning GCC from arter >>"
-      git clone --depth=1 "$GCC_Source_64" "$HOME/gcc64"
-      git clone --depth=1 "$GCC_Source_32" "$HOME/gcc32"
+      git clone --depth=1 "$GCC_Source_64" "$base/gcc64"
+      git clone --depth=1 "$GCC_Source_32" "$base/gcc32"
     fi
-    export PATH="$HOME/gcc64/bin:$HOME/gcc32/bin:$PATH"
-    export STRIP="$HOME/gcc64/aarch64-elf/bin/strip"
-    export KBUILD_COMPILER_STRING=$("$HOME/gcc64/bin/aarch64-elf-gcc" --version | head -n 1)
+    export PATH="$base/gcc64/bin:$base/gcc32/bin:$PATH"
+    export STRIP="$base/gcc64/aarch64-elf/bin/strip"
+    export KBUILD_COMPILER_STRING=$("$base/gcc64/bin/aarch64-elf-gcc" --version | head -n 1)
 elif [ "$TOOLCHAIN" == "clang" ]; then
-    if [ ! -d "$HOME/Clang_19" ]; then
+    if [ ! -d "$base/Clang" ]; then
       yellow_message "Your Chosen Toolchain is $TOOLCHAIN"
       echo
       sleep 1s
       green_message "<< Cloning Clang 19 >>"
-      git clone -b 14 "$TOOLCHAIN_SOURCE" "$HOME/Clang_19"
+      git clone -b 14 "$TOOLCHAIN_SOURCE" "$base/Clang"
     fi
-    export PATH="$HOME/Clang_19/bin:$PATH"
-    export STRIP="$HOME/Clang_19/aarch64-linux-gnu/bin/strip"
-    export KBUILD_COMPILER_STRING=$("$HOME/Clang_19/bin/clang" --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:>]//g')
+    export PATH="$base/Clang/bin:$PATH"
+    export STRIP="$base/Clang/aarch64-linux-gnu/bin/strip"
+    export KBUILD_COMPILER_STRING=$("$base/Clang/bin/clang" --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:>]//g')
 fi
 
 # Function to build the kernel
@@ -203,7 +228,7 @@ KERVER=$(make kernelversion)
 # Now Clone AnyKernel
         sleep 2s
         yellow_message "<< Cloning AnyKernel from your repo >>"
-        git clone "$AnyKernel" --single-branch -b "$AnyKernelbranch" $HOME/AnyKernel3
+        git clone "$AnyKernel" --single-branch -b "$AnyKernelbranch" $base/AnyKernel3
         echo
         green_message "<< AnyKernel Cloned Successfully!! >>"
 
@@ -212,7 +237,7 @@ yellow_message "<< Creating Kernel Zip >>"
 kernel_name="Streamline"
 device_name="bluecross"
 zip_name="$kernel_name-14-$device_name-$(date +"%Y%m%d-%H%M").zip"
-export anykernel="$HOME/AnyKernel3"
+export anykernel="$base/AnyKernel3"
 
 delete_zip(){
   cd $anykernel
@@ -221,21 +246,21 @@ delete_zip(){
 }
 
 build_package(){
-  cp -rf /home/kanishkthederp/msm-4.9/out/arch/arm64/boot/Image.lz4-dtb $anykernel/
-  cp -rf /home/kanishkthederp/msm-4.9/out/arch/arm64/boot/dtbo.img $anykernel/
+  cp -rf $base/$folder/out/arch/arm64/boot/Image.lz4-dtb $anykernel/
+  cp -rf $base/$folder/out/arch/arm64/boot/dtbo.img $anykernel/
   zip -r9 UPDATE-AnyKernel3.zip * -x README UPDATE-AnyKernel3.zip
 }
 
 make_name(){
   mv UPDATE-AnyKernel3.zip $zip_name
-  mkdir $HOME/kernel_zips
-  mv $zip_name $HOME/kernel_zips/
+  mkdir $base/kernel_zips
+  mv $zip_name $base/kernel_zips/
   green_message "<< Created Kernel zip >>"
 }
 
 upload(){
    yellow_message "<< Uploading to PixelDrain >>"
-   pdup $HOME/kernel_zips/$zip_name
+   pdup $base/kernel_zips/$zip_name
    green_message "<< Finished uploading >>"
 }
 
