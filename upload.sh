@@ -33,7 +33,7 @@ status_code=$(echo "$response" | grep "HTTP_STATUS" | awk -F: '{print $2}')
 upload_response=$(echo "$response" | sed -e 's/HTTP_STATUS\:.*//g')
 
 # Notify the user of completion and display the file link if successful
-if [ "$status_code" -eq 200 ]; then
+if [ "$status_code" -eq 201 ]; then
     file_id=$(echo "$upload_response" | jq -r '.id')
     echo "File upload completed."
     echo "File link: https://pixeldrain.com/u/$file_id"
