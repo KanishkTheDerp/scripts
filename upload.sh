@@ -69,8 +69,19 @@ get_api_key() {
 
 # Function to upload the file
 upload_file() {
-    # Prompt the user for the file name with readline support for auto-completion
-    read -e -p "Enter the file name to upload: " file_path
+    # Check if the filename is provided as an argument
+    if [ -n "$1" ]; then
+        file_path="$1"
+    else
+        # Prompt the user for the file name with readline support for auto-completion
+        read -e -p "Enter the file name to upload: " file_path
+    fi
+
+    # Check if the file exists
+    if [ ! -f "$file_path" ]; then
+        echo "File not found: $file_path"
+        exit 1
+    fi
 
     # Get the API key
     get_api_key
@@ -108,4 +119,4 @@ fi
 install_jq
 
 # If not installing, proceed with uploading the file
-upload_file
+upload_file "$1"
