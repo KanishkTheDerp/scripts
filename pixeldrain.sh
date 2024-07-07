@@ -1,11 +1,16 @@
 #!/bin/bash
+#
+# PixelDrain upload script
+# Usage : chmod +x pixeldrain.sh
+#         sudo ./pixeldrain.sh --install (Installs the script in/usr/bin)
+#	  pixeldrain path/to/file/filename
 
 # Define the path for the API key file
 api_key_file="$HOME/.pixeldrain_api_key"
 
 # Function to install the script in /usr/bin and set permissions
 install_script() {
-    script_path="/usr/bin/upload"
+    script_path="/usr/bin/pixeldrain"
 
     # Check if the script is already installed
     if [ -f "$script_path" ]; then
@@ -20,7 +25,7 @@ install_script() {
     sudo chmod +x "$script_path"
 
     echo "Script installed successfully in $script_path."
-    echo "You can now run 'upload' from anywhere."
+    echo "You can now run 'pixeldrain' from anywhere."
     exit 0
 }
 
@@ -51,8 +56,6 @@ install_jq() {
 
 # Check if running with sudo and install the script if needed
 if [ "$(id -u)" != "0" ]; then
-    echo "Script requires superuser privileges to install."
-    echo "Re-running with sudo to install..."
     sudo bash "$0" "$@"
     exit $?
 fi
@@ -93,7 +96,7 @@ upload_file() {
     echo "Please wait while uploading..."
 
     # Use curl to upload the file using a POST request and capture the response
-    response=$(curl -X POST -F "file=@$file_path" -u ":$api_key" "$api_endpoint" --silent --write-out "\nHTTP_STATUS:%{http_code}")
+    response=$(curl --progress-bar -X POST -F "file=@$file_path" -u ":$api_key" "$api_endpoint" --write-out "\nHTTP_STATUS:%{http_code}")
 
     # Extract the status code from the response
     status_code=$(echo "$response" | grep "HTTP_STATUS" | awk -F: '{print $2}')
