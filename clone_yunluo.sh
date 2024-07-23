@@ -8,12 +8,13 @@ mkdir -p "$target_dir"
 
 # Define array of repositories and target paths
 repos=(
-  "https://github.com/KanishkTheDerp/device_xiaomi_yunluo device/xiaomi/yunluo"
-  "https://github.com/xiaomi-mt6789-devs/android_device_xiaomi_yunluo-kernel device/xiaomi/yunluo-kernel"
-  "https://github.com/KanishkTheDerp/device_mediatek_sepolicy_vndr device/mediatek/sepolicy_vndr"
-  "https://github.com/LineageOS/android_hardware_xiaomi hardware/xiaomi"
-  "https://github.com/KanishkTheDerp/hardware_mediatek hardware/mediatek"
-  "https://github.com/xiaomi-mt6789-devs/android_vendor_xiaomi_yunluo vendor/xiaomi/yunluo"
+  "https://github.com/yunluo-testzone/device_xiaomi_yunluo device/xiaomi/yunluo"
+  "https://github.com/yunluo-testzone/device_xiaomi_yunluo-kernel device/xiaomi/yunluo-kernel"
+  "https://github.com/yunluo-testzone/device_mediatek_sepolicy_vndr device/mediatek/sepolicy_vndr"
+  "https://github.com/yunluo-testzone/hardware_dolby hardware/dolby"
+  "https://github.com/yunluo-testzone/hardware_xiaomi hardware/xiaomi"
+  "https://github.com/yunluo-testzone/hardware_mediatek hardware/mediatek"
+  "https://github.com/yunluo-testzone/vendor_xiaomi_yunluo vendor/xiaomi/yunluo"
 )
 
 # Clone each repository into the target directory
