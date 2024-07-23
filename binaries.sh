@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Source directory
-SOURCE_DIR="$HOME/missi/out/android12-5.10/dist"
+SOURCE_DIR="$HOME/5.10/out/android12-5.10/dist"
 
 # Source files
 SOURCE_IMAGE="$SOURCE_DIR/Image.gz"
